@@ -6,24 +6,33 @@ RSpec.describe StudentsController, type: :request do
   context 'with student present' do
   let(:student) {  FactoryGirl.create :student }
 
-  #def student
-  #  @student ||= FactoryGirl.create(:student)
-  #end
+    describe "GET /students/:id" do
+      it "finds student by id" do
+        
+        get "/students/#{student.id}.json"
+        expect(response.status).to eq(200)
+      end
 
-  describe "GET /students/:id" do
-    it "finds student by id" do
+      it "renders JSON by default" do
+        get "/students/#{student.id}"
+        expected = ActiveSupport::JSON.decode(student.to_json)
+        parsed_response = ActiveSupport::JSON.decode(response.body)
+        expect(parsed_response).to eql expected
+      end
+    end
+
+    describe "PUT 'update'" do
+      it "returns correct status code" do
+        params = {name: 'Dan'}
+        put "/students/#{student.id}", { student: params }
       
-      get "/students/#{student.id}.json"
-      expect(response.status).to eq(200)
-    end
+         expect { put "/students/#{student.id}" }.to change { student_params }.to("Dan")
+      
+      end
 
-    it "renders JSON by default" do
-      get "/students/#{student.id}"
-      expected = ActiveSupport::JSON.decode(student.to_json)
-      parsed_response = ActiveSupport::JSON.decode(response.body)
-      expect(parsed_response).to eql expected
+     # it "updates correctly" do
+     # end
     end
-  end
   end
 
   describe "POST 'create'" do
@@ -40,8 +49,6 @@ RSpec.describe StudentsController, type: :request do
       expect { post "/students", { student: student_params }  }.to change{ Student.count }.by(1)
     end
   end
-
-
 
 end
 
