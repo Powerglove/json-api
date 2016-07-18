@@ -2,13 +2,13 @@ require 'rails_helper'
 
 
 RSpec.describe StudentsController, type: :request do
-  
+
   context 'with student present' do
   let(:student) {  FactoryGirl.create :student }
 
     describe "GET /students/:id" do
       it "finds student by id" do
-        
+
         get "/students/#{student.id}.json"
         expect(response.status).to eq(200)
       end
@@ -22,31 +22,34 @@ RSpec.describe StudentsController, type: :request do
     end
 
     describe "PUT 'update'" do
-      it "returns correct status code" do
-        params = {name: 'Dan'}
-        put "/students/#{student.id}", { student: params }
-      
-         expect { put "/students/#{student.id}" }.to change { student_params }.to("Dan")
-      
-      end
+      let(:update_params) { {name: "Stan"} }
 
-     # it "updates correctly" do
-     # end
+      it "updates student with the given params" do
+      expect { put "/students/#{student.id}", { student: update_params }  }.to change{ student.reload.name }.from("John").to("Stan")
+      end
     end
+
+    describe "DELETE 'destroy'" do
+
+      it " deletes an existing student" do
+        expect { delete "/students/#{student.id}" }.to change{ Student.count }.by(-1)
+      end
+    end
+
   end
 
   describe "POST 'create'" do
-    let(:student_params) { FactoryGirl.attributes_for(:student) }
+    let(:create_params) { FactoryGirl.attributes_for(:student) }
 
-    it "returns correct status code" do 
-      post "/students", { student: student_params }
+    it "returns correct status code" do
+      post "/students", { student: create_params }
       expect(assigns[:student]).to be_present # checks if the controller has an instance variable named @student assigned but we do not do this in request spesc
       # because instance vars are "implementation details" not relevant for request "result"
       expect(response.status).to eq(201)
     end
 
     it "creates new student" do
-      expect { post "/students", { student: student_params }  }.to change{ Student.count }.by(1)
+      expect { post "/students", { student: create_params }  }.to change{ Student.count }.by(1)
     end
   end
 

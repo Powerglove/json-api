@@ -1,7 +1,7 @@
 class StudentsController < ApplicationController
 
   def index
-    @students = Student.all 
+    @students = Student.all
     render json: @students
   end
 
@@ -18,7 +18,7 @@ class StudentsController < ApplicationController
     else
       render json: @student.errors, status: :unprocessable_entity
     end
-    
+
   end
 
   def update
@@ -28,12 +28,14 @@ class StudentsController < ApplicationController
       render json: @student, status: :created
     else
       render json: @student.errors, status: :unprocessable_entity
-    end 
+    end
   end
 
   def destroy
+    @student = Student.find(params[:id])
+    puts "2 try: I am here! My student is: #{@student}"
     @student.destroy
-
+    puts "I am not here anymore #{@student}!"
     head :no_content
   end
 
