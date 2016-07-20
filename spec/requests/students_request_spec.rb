@@ -30,8 +30,9 @@ RSpec.describe StudentsController, type: :request do
     end
 
     describe "DELETE 'destroy'" do
+      let!(:student) {  FactoryGirl.create :student }
 
-      it " deletes an existing student" do
+      it "deletes an existing student" do
         expect { delete "/students/#{student.id}" }.to change{ Student.count }.by(-1)
       end
     end

@@ -33,9 +33,7 @@ class StudentsController < ApplicationController
 
   def destroy
     @student = Student.find(params[:id])
-    puts "2 try: I am here! My student is: #{@student}"
     @student.destroy
-    puts "I am not here anymore #{@student}!"
     head :no_content
   end
 
